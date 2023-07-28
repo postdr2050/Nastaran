@@ -1,0 +1,48 @@
+clc;
+close all;
+data=-10:0.12:100;
+n=numel(data);
+target=zeros(1,n);
+output=zeros(1,n);
+% data=(data-min(data))/(max(data)-min(data));
+rand_i=randperm(n);
+[rand_i,a]=sort(rand_i);
+data=data(rand_i);
+target=sin(data)./data;
+epoch=100;
+number_train=round(1*n);
+number_test=n-number_train;
+number_mf=10;
+Mean_mf=unifrnd(-10,10,[1,number_mf]);
+Sigma_mf=unifrnd(0.5,0.5,[1,number_mf]);
+rule=zeros(1,number_mf);
+w_end=unifrnd(-1,1,[1,number_mf]);
+eta=0.1;
+
+for iter=1:epoch
+   for i=1:number_train
+       x=data(i);
+       x_input=unifrnd(x,x,[1,number_mf]);
+       rule=exp(-0.5*((x_input-Mean_mf)./(Sigma_mf)).^2);  
+       sum_rule=sum(rule);
+       rule=rule/sum_rule;
+       output_final=rule*w_end';
+       %****************************
+       error=target(i)-output_final;
+       w_end=w_end+eta*error*rule;
+       
+   end
+end
+
+for i=1:number_train
+   x=data(i);
+   x_input=unifrnd(x,x,[1,number_mf]);
+   rule=exp(-0.5*((x_input-Mean_mf)./(Sigma_mf)).^2);  
+   sum_rule=sum(rule);
+   rule=rule/sum_rule;
+   output(i)=rule*w_end';
+end
+
+plot(target,'.-r');
+hold on;
+plot(output,'.-b');
