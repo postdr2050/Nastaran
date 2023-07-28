@@ -7,6 +7,9 @@ for i=1:NumberOfVariable-1
             count=count+1;
         end
     end
+    pppp
+
+    oooo
 end
 z=count;
 end
